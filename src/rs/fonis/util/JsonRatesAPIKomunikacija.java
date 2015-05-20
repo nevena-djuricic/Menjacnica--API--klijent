@@ -15,41 +15,50 @@ public class JsonRatesAPIKomunikacija {
 
 	// http://jsonrates.com/get/?from=EUR&to=RSD&apiKey=jr-ba8999934fc5a7ab64a4872fb4ed9af7
 
-	String appKey = "jr-ba8999934fc5a7ab64a4872fb4ed9af7";
-	String jsonRatesURL = "http://jsonrates.com/get/?from=EUR&to=RSD&apiKey=jr-ba8999934fc5a7ab64a4872fb4ed9af7";
+	static final String appKey = "jr-ba8999934fc5a7ab64a4872fb4ed9af7";
+	static final String jsonRatesURL = "http://jsonrates.com/get/";
 
-	private Valuta[] vratiIznosKurseva (String[] nazivi, String from, String to) {
+	static String url;
+
+	public static Valuta[] vratiIznosKurseva (String[] nazivi) {
 		Valuta[] valute = new Valuta[nazivi.length];
 
 		for (int i = 0; i < nazivi.length; i++) {
-			
-			String url = jsonRatesURL + "?" +
-					"from=" + from +
-					"&to=" + to +
-					"&apiKey=" + appKey;
-
-			try {
-				String rezultat = sendGet(url);
-
-				Gson gson = new GsonBuilder().create();
-				JsonObject jsonResult = (JsonObject) gson.fromJson(rezultat, JsonObject.class);
-
-				Valuta nova = new Valuta();
-				nova.setNaziv(nazivi[i]);
-				nova.setKurs(Double.parseDouble(jsonResult.get("rate").getAsString()));
+			for (int j = 0; j < nazivi.length; j++) {
+				ispisi(nazivi[i], nazivi[j]);
 				
-				valute[i] = nova;
-				
-			} catch (Exception e) {
-				e.printStackTrace();
+				try {
+					String rezultat = sendGet(url);
+
+					Gson gson = new GsonBuilder().create();
+					JsonObject jsonResult = (JsonObject) gson.fromJson(rezultat, JsonObject.class);
+
+					Valuta nova = new Valuta();
+					nova.setNaziv(nazivi[i]);
+					nova.setKurs(Double.parseDouble(jsonResult.get("rate").getAsString()));
+
+					valute[i] = nova;
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		}
-		
+
 		return valute;
-		
+
 	}
 
-	private String sendGet(String url) throws Exception {
+	private static String ispisi(String from, String to) {
+		url = jsonRatesURL + "?" +
+				"from=" + from +
+				"&to=" + to +
+				"&apiKey=" + appKey;
+
+		return url;
+	}
+
+	private static String sendGet(String url) throws Exception {
 		URL objekat = new URL(url);
 		HttpURLConnection konekcija = (HttpURLConnection) objekat.openConnection();
 
