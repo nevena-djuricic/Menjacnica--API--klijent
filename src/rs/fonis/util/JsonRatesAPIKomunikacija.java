@@ -18,14 +18,16 @@ public class JsonRatesAPIKomunikacija {
 	static final String appKey = "jr-ba8999934fc5a7ab64a4872fb4ed9af7";
 	static final String jsonRatesURL = "http://jsonrates.com/get/";
 
-	static String url;
-
 	public static Valuta[] vratiIznosKurseva (String[] nazivi) {
 		Valuta[] valute = new Valuta[nazivi.length];
-
+		String url;
+		
 		for (int i = 0; i < nazivi.length; i++) {
 			for (int j = 0; j < nazivi.length; j++) {
-				ispisi(nazivi[i], nazivi[j]);
+				
+				if (i == j) continue;
+				
+				url = ispisi(nazivi[i], nazivi[j]);
 				
 				try {
 					String rezultat = sendGet(url);
@@ -50,12 +52,12 @@ public class JsonRatesAPIKomunikacija {
 	}
 
 	private static String ispisi(String from, String to) {
-		url = jsonRatesURL + "?" +
+		String urlAdresa = jsonRatesURL + "?" +
 				"from=" + from +
 				"&to=" + to +
 				"&apiKey=" + appKey;
 
-		return url;
+		return urlAdresa;
 	}
 
 	private static String sendGet(String url) throws Exception {
