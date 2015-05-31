@@ -1,9 +1,10 @@
-package rs.fonis.util;
+package rs.fonis.komunikacija;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.LinkedList;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -18,8 +19,8 @@ public class JsonRatesAPIKomunikacija {
 	static final String appKey = "jr-ba8999934fc5a7ab64a4872fb4ed9af7";
 	static final String jsonRatesURL = "http://jsonrates.com/get/";
 
-	public static Valuta[] vratiIznosKurseva (String[] nazivi) {
-		Valuta[] valute = new Valuta[nazivi.length];
+	public static LinkedList<Valuta> vratiIznosKurseva (String[] nazivi) {
+		LinkedList<Valuta> valute = new LinkedList<Valuta>();
 		String url;
 		
 		for (int i = 0; i < nazivi.length; i++) {
@@ -39,7 +40,7 @@ public class JsonRatesAPIKomunikacija {
 					nova.setNaziv(nazivi[i]);
 					nova.setKurs(Double.parseDouble(jsonResult.get("rate").getAsString()));
 
-					valute[i] = nova;
+					valute.add(nova);
 
 				} catch (Exception e) {
 					e.printStackTrace();
